@@ -1,0 +1,26 @@
+{% extends 'testsuite/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {{ block.super }}
+    Question #{{ question.number }}: <b>{{ question.text }}</b> ?
+{% endblock %}
+
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {% for variant in variants %}
+            <div class="checkbox">
+              <label><input type="checkbox" name="{{ prefix }}{{ forloop.counter }}" value="1">   {{ variant }}</label>
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-success">Submit</button>
+<!--        <a href="{{ question.prev }}" class="btn btn-light"><< Previous</a>-->
+        <a href="#" class="btn btn-light"><< Previous</a>
+<!--        <a href="{{ question.next }}" class="btn btn-light">Next >></a>-->
+        <a href="#" class="btn btn-light">Next >></a>
+
+    </form>
+{% endblock %}
