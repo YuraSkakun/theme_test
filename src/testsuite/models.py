@@ -1,6 +1,8 @@
 from django.db import models
 
-from app import settings
+# from app import settings
+from django.conf import settings
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 from django.db.models import Count, Sum
@@ -39,7 +41,8 @@ class Test(models.Model):
         return self.questions.count()
 
     def last_run(self):
-        last_run = self.test_results.order_by('-id').first()
+        # last_run = self.test_results.order_by('-id').first()
+        last_run = self.test_results.order_by('-datetime_run').first()
         if last_run:
             return last_run.datetime_run
         return ''
@@ -95,6 +98,10 @@ class TestResult(models.Model):
     def update_score(self):
         # result = 42
         # self.avr_score = result
+
+        # correct_answers = self.test_result_details.filter(is_correct=True).count()
+        # all_answers = self.test_result_details.count()
+
         qs = self.test_result_details.values('question').annotate(
             num_answers=Count('variant'),  # or =Count('question')
             score=Sum('is_correct')  # bool value True -->1, False --> 0
@@ -145,7 +152,11 @@ class TestResultDetail(models.Model):
     test_result = models.ForeignKey(to=TestResult, related_name='test_result_details', on_delete=models.CASCADE)
     question = models.ForeignKey(to=Question, related_name='test_result_details', on_delete=models.CASCADE)
     variant = models.ForeignKey(to=Variant, related_name='test_result_details', on_delete=models.CASCADE)
-    is_correct = models.BooleanField(default=False)
+    # is_correct = models.BooleanField(default=False)
+    is_correct = models.IntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(1)],
+        default=0
+    )
 
     def __str__(self):
         return f'Test Run: {self.test_result.id}, Question: {self.question.text}, Success: {self.is_correct}'

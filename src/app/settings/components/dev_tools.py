@@ -1,0 +1,51 @@
+# from app.settings.components.base import *
+
+import os
+from app.settings.components.base import INSTALLED_APPS, MIDDLEWARE, BASE_DIR
+
+# SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = True
+
+# SECRET_KEY = 'dev secret key'
+SECRET_KEY = os.environ['SECRET_KEY']
+
+
+INSTALLED_APPS += [
+    'django_extensions',
+    'debug_toolbar',
+]
+
+MIDDLEWARE += [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
+
+LOGGING = {
+    'version': 1,
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        }
+    }
+}
+
+INTERNAL_IPS = [
+    # ...
+    '127.0.0.1',
+    # ...
+]
+
+TEST_RUNNER = "redgreenunittest.django.runner.RedGreenDiscoverRunner"

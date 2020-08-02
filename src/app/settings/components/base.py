@@ -11,20 +11,32 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+
+from dotenv import load_dotenv
+
 from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+load_dotenv(os.environ.get('ENV_CONFIG', ''))
+# load_dotenv(os.path.join(BASE_DIR, 'app/settings/environment/dev.env'))
+
+# load_dotenv(os.environ.get('ENV_CONFIG',
+#                            os.path.join(BASE_DIR, 'app/settings/environment/dev.env')))
+# load_dotenv(os.environ.get('ENV_CONFIG',
+#                            os.path.join(BASE_DIR, 'app', 'settings', 'environment', 'dev.env')))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'm@%iho0$bb82%r^@ttgdrjeu&c63j=yz=7p#$5-x@qp+=o2re9'
+
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -39,8 +51,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'django_extensions',
-    'debug_toolbar',
+    # 'django_extensions',
+    # 'debug_toolbar',
     'crispy_forms',
 
     'user_account',
@@ -57,7 +69,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'core.middlewares.QueryParamsInjectorMiddleware',
     'core.middlewares.TimeLog',
 ]
@@ -135,40 +147,40 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
 
-LOGGING = {
-    'version': 1,
-    'filters': {
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        }
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-        }
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-        }
-    }
-}
+# LOGGING = {
+#     'version': 1,
+#     'filters': {
+#         'require_debug_true': {
+#             '()': 'django.utils.log.RequireDebugTrue',
+#         }
+#     },
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'filters': ['require_debug_true'],
+#             'class': 'logging.StreamHandler',
+#         }
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'level': 'DEBUG',
+#             'handlers': ['console'],
+#         }
+#     }
+# }
 
-INTERNAL_IPS = [
-    # ...
-    '127.0.0.1',
-    # ...
-]
+# INTERNAL_IPS = [
+#     # ...
+#     '127.0.0.1',
+#     # ...
+# ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = '/'
@@ -184,3 +196,11 @@ MESSAGE_TAGS = {
 }
 
 SESSION_COOKIE_AGE = 2 * 3600
+
+# FIXTURE_DIRS = (os.path.join(BASE_DIR, 'tests/fixtures'),)
+
+
+# try:
+#     from app.settings_local import *
+# except ImportError:
+#     pass
